@@ -1,0 +1,92 @@
+<meta charset="utf-8">
+<script type="text/javascript">
+
+/*ФУНКЦИИ*/
+
+//(A) Написать функцию, которая принимает в качестве параметра число n. 
+//Результатом работы функции является массив из N элементов со значениями 1, 2, 3… n.
+function arrayElementsN(n) { 
+	var newArray = []
+	var i = 0 	
+	while(i<n){
+		newArray.push(" "+(i+1))
+		i++
+	} return newArray
+}
+
+
+//Пришлось написать функцию для собирания строки в массив. 
+//TODO изучить еще способы собрания строки в массив.
+function createArray(myArray) {
+	return myArray.split(',')
+}
+
+
+//(B) Написать функцию, которая принимает массив чисел. 
+//Результатом работы функции является сумма чисел этого массива.
+function sumN(arrayNumbers) {
+	var sum = 0
+	var i = 0 	
+	while(i<arrayNumbers.length){
+		sum += parseInt(arrayNumbers[i])
+		i++
+	} return sum
+}
+
+
+//(C) Написать функцию, которая на вход получает массив целых чисел 
+//В качестве результата возвращает максимальное число.
+function maxInArray(array) {
+	var max = parseInt(array[0])
+	var i = 1 	
+	while(i-1<array.length){
+		if (max<parseInt(array[i])){
+			max = array[i]
+		}
+		i++
+	} return max
+}
+
+
+//(D) Написать функцию, которая на вход получает массив целых чисел
+//В качестве результата возвращает минимальное число.
+function minInArray(array) {
+	var min = parseInt(array[0])
+	var i = 1 	
+	while(i-1 < array.length){
+		if (min > parseInt(array[i])){
+			min = array[i]
+		}
+		i++
+	} return min
+}
+
+
+//(F) Написать функцию, которая на вход получает массив целых чисел, и 
+//в качестве результата возвращает только четные числа 
+function evenInArray(array) {
+	var newArray = []
+	var i = 0 	
+	while(i < array.length){
+		if (parseInt(array[i])%2==0){
+			newArray.push(array[i])
+		}
+		i++
+	} return newArray
+}
+
+
+/*ПРОГРАММА*/
+
+var userN = +prompt("a. Какое число N элементов хочешь вывести в массиве?")
+document.write(`Окей! Вот твой сформированный ряд: ${arrayElementsN(userN)} <BR>`)
+
+var userArray = prompt("b,c,d,e,f. Через запятую введи числа, которые преобразуем в массив")
+var userArray = createArray(userArray)
+document.write(`Окей! Вот твой массив: ${userArray} <BR>`)
+document.write(`Окей! Вот твоя сумма введённых чисел: ${sumN(userArray)} <BR>`)
+document.write(`Окей! Вот максимальное число из введённых чисел: ${maxInArray(userArray)} <BR>`)
+document.write(`Окей! Вот минимальное число из введённых чисел: ${minInArray(userArray)} <BR>`)
+document.write(`Окей! Вот только четные числа из введённого массива: ${evenInArray(userArray)} <BR>`)
+
+</script>
