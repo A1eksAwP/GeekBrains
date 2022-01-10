@@ -1,61 +1,20 @@
-/*      Урок 4. Объекты в JavaScript
-OK      1. Написать функцию, преобразующую число в объект. Передавая на вход число от 0 до 999, мы должны получить на выходе объект, в котором в соответствующих свойствах описаны единицы, десятки и сотни. 
-        Например, для числа 245 мы должны получить следующий объект: {‘единицы’: 5, ‘десятки’: 4, ‘сотни’: 2}. Если число превышает 999, необходимо выдать соответствующее сообщение с помощью console.log и вернуть пустой объект.
-OK      2. Продолжить работу с интернет-магазином:
-        В прошлом домашнем задании вы реализовали корзину на базе массивов. Какими объектами можно заменить их элементы?
-OK      Реализуйте такие объекты.
-OK      Перенести функционал подсчета корзины на объектно-ориентированную базу.
-
-~OK     3. * Подумать над глобальными сущностями. К примеру, сущность «Продукт» в интернет-магазине актуальна не только для корзины, но и для каталога. 
-        Стремиться нужно к тому, чтобы объект «Продукт» имел единую структуру для различных модулей сайта, но в разных местах давал возможность вызывать разные методы.
+/*      
 */
 
-function numbericator(nowNumber) { //По фану решил сделать функцию, которая при вызове выведет число текстом (Мэйби в сценариях озвучки допустим, или как в счетах прописывают)
-    switch (nowNumber) {
-        case 0: return 'ноль'
-        case 1: return 'один'
-        case 2: return 'два'
-        case 3: return 'три'
-        case 4: return 'четыре'
-        case 5: return 'пять'
-        case 6: return 'шесть'
-        case 7: return 'семь'
-        case 8: return 'восемь'
-        case 9: return 'девять'
-        default: return 'это не число'
-    }
+function FloatDisplayPrice (price) {
+        return `${Math.floor(price)}руб ${Math.round(Math.abs(price-Math.floor(price)).toFixed(2)*100)}коп.`
 }
 
-function numberToClass(userNumber) { //Функция, преобразующая число в объект. Я ее ограничил от 0-999 по заданию. А вообще хотел расширить и до тысяч и десяток тысяч (у меня огромная корзина)
-        let nowNumberClass = {
-                number: 0, //Нынешнее число
-                units: 0, //Единицы в числе
-                tens: 0, //Десятки в числе
-                hundreds: 0, //Сотни в числе
-                }
-        nowNumberClass.number = userNumber
-                if (nowNumberClass.number <= 9 && nowNumberClass.number >= 0) {
-                        nowNumberClass.units = `Единицы в числе: ${nowNumberClass.number} (${numbericator(nowNumberClass.number)})`
-                } else if (nowNumberClass.number <= 999) {
-                        nowNumberClass.units = `Единицы в числе: ${Math.floor(nowNumberClass.number % 10)} (${numbericator(Math.floor(nowNumberClass.number % 10))})`
-                        nowNumberClass.tens = `Десятки в числе: ${Math.floor(nowNumberClass.number / 10 % 10)} (${numbericator(Math.floor(nowNumberClass.number / 10 % 10))})`
-                        nowNumberClass.hundreds = `Сотни в числе: ${Math.floor(Math.floor(nowNumberClass.number / 100 % 10))} (${numbericator(Math.floor(nowNumberClass.number / 100 % 10))})`
-                } else {
-                        nowNumberClass.number = 0;
-                        return console.log('Вы ввели число за диапазоном 0 - 999');
-                }
-        return nowNumberClass //Вернуть заполненный объект
-} 
-
 function countCartPrice() { //Функция подсчета корзины
-        let i = 0
-        let countCartPrice = 0
-        for (let i in cart) { 
-                countCartPrice += cart[i].price
-        }
-        if (countCartPrice===0) {return 'Корзина пуста! (Пропиши в консоль: cart.push(catalog(i)) или Object.assign(cart,catalog) чтобы добавить товар, а затем renderMyCart(). Скоро появятся кнопки и пользовательский интерфейс!)'} else {
-        return `Сейчас в вашей корзине находится ${cart.length} товаров общей суммой: ${countCartPrice.toFixed(0)}руб ${Math.round(Math.abs(Math.floor(countCartPrice)-countCartPrice).toFixed(2)*100)}коп.`
-        }
+                let i = 0
+                cart.price = 0
+                if (cart.items.length===0) {
+                        return `Твоя корзина еще пуста, скорее за покупками в наш каталог!`
+                } else { 
+                        for (let i in cart.items) { 
+                                cart.price += 0+cart.items[i].price } 
+        return `Сейчас в вашей корзине находится ${cart.items.length} товаров на сумму: ${FloatDisplayPrice(cart.price)}`
+}
 }
 
 function countCatalogPrice() { //Функция подсчета каталога
@@ -66,12 +25,17 @@ function countCatalogPrice() { //Функция подсчета каталог�
                 countInStock += catalog[i].stock
         }
         if (countCatalogPrice===0) {return 'Каталог пуст!'} else {
-        return (`В нашем каталоге доступно ${catalog.length} наименований товаров (из ${countInStock}шт) общей суммой: ${countCatalogPrice.toFixed(0)}руб ${Math.round(Math.abs(Math.floor(countCatalogPrice)-countCatalogPrice)*100)}коп.`)
+        return (`В нашем каталоге доступно ${catalog.length} наименований товаров (из ${countInStock}шт на складе) общей суммой: ${FloatDisplayPrice(countCatalogPrice)}`)
         }
 }
 
-var cart = [] //Создадим пустую корзину товаров
+//Создадим пустую корзину товаров, будем хранить в ней и общую стоимость
+var cart = { 
+        items: [], 
+        price: 0,
+} 
 
+//Каталог с товарами в магазине
 var catalog = [
         {
                 id: 1,
@@ -216,88 +180,88 @@ var catalog = [
                 price: 76.50,
                 group: 'Консервированная продукция',
                 stock: 582,
-                units: 'банка'
+                units: 'банку'
         },
         {
                 id: 17,
                 uuid: 'c1649473-b4b1-46d6-836f-ffb5ce70db8c',
-                name: 'Зеленый горошек первый и высший сорт, ж/б, 360г',
+                name: 'Зеленый горошек первый и высший сорт',
                 price: 36.26,
                 group: 'Консервированная продукция',
                 stock: 447,
-                units: 'банка'
+                units: 'банку'
         },
         {
                 id: 18,
                 uuid: 'fa35d9d3-1eb7-4f75-89d2-a9db68660ea8',
-                name: 'Зеленый горошек, высший сорт, с/б, 650-680г',
+                name: 'Зеленый горошек, высший сорт',
                 price: 58.60,
                 group: 'Консервированная продукция',
                 stock: 5,
-                units: 'банка'
+                units: 'банку'
         },
         {
                 id: 19,
                 uuid: '661eb504-932d-41ad-9356-947ae87a94d4',
-                name: 'Икра кабачковая, ж/б 360г',
+                name: 'Икра кабачковая',
                 price: 31.60,
                 group: 'Консервированная продукция',
                 stock: 558,
-                units: 'банка'
+                units: 'банку'
         },
         {
                 id: 20,
                 uuid: '0f592860-09f7-47f6-ad9a-fc65ad8e21d1',
-                name: 'Икра кабачковая, с/б 650г',
+                name: 'Икра кабачковая',
                 price: 44.60,
                 group: 'Консервированная продукция',
                 stock: 299,
-                units: 'банка'
+                units: 'банку'
         },
         {
                 id: 21,
                 uuid: 'd46108aa-ce7d-4cc8-bac3-7da399283f1b',
-                name: 'Кукуруза сахарная, ж/б 340г/425мл (сладкая)',
+                name: 'Кукуруза сахарная (сладкая)',
                 price: 36.95,
                 group: 'Консервированная продукция',
                 stock: 280,
-                units: 'банка'
+                units: 'банку'
         },
         {
                 id: 22,
                 uuid: '637c85bd-27fd-4d28-91db-a5113734b581',
-                name: 'Напиток (нектар) тыквенный, с/б,3л',
+                name: 'Напиток (нектар) тыквенный',
                 price: 76.00,
                 group: 'Консервированная продукция',
                 stock: 171,
-                units: 'банка'
+                units: 'банку'
         },
         {
                 id: 23,
                 uuid: 'cc62b59d-b3d3-489e-84f5-8df190c9b112',
-                name: 'Напиток груши-дички, с/б, 3л',
+                name: 'Напиток груши-дички',
                 price: 60.80,
                 group: 'Консервированная продукция',
                 stock: 520,
-                units: 'банка'
+                units: 'банку'
         },
         {
                 id: 24,
                 uuid: 'fd51ec49-e7c9-4838-bd42-0a4e92caea0b',
-                name: 'Напиток шиповника, с/б, 3л',
+                name: 'Напиток шиповника',
                 price: 60.80,
                 group: 'Консервированная продукция',
                 stock: 272,
-                units: 'банка'
+                units: 'банку'
         },
         {
                 id: 25,
                 uuid: 'abd79099-ecf6-4b9a-8109-4c37c3bbaefd',
-                name: 'Огурцы или томаты консервированные, целые, с/б, Зл',
+                name: 'Томаты консервированные',
                 price: 125.00,
                 group: 'Консервированная продукция',
                 stock: 217,
-                units: 'банка'
+                units: 'банку'
         },
         {
                 id: 26,
@@ -311,16 +275,16 @@ var catalog = [
         {
                 id: 27,
                 uuid: '28fa6b73-9eea-4782-8f64-e6d58f525aca',
-                name: 'Повидло, с/б, 615-650г',
+                name: 'Повидло в банке',
                 price: 67.08,
                 group: 'Консервированная продукция',
                 stock: 807,
-                units: 'банка'
+                units: 'банку'
         },
         {
                 id: 28,
                 uuid: '97b1a30d-d9c1-4027-a0af-3fd6685c9c5e',
-                name: 'Сок томатный или фруктовый (яблочный) в ассорт., тетра-пак, 1л',
+                name: 'Фруктовый сок в ассорт',
                 price: 25.80,
                 group: 'Консервированная продукция',
                 stock: 781,
@@ -329,11 +293,11 @@ var catalog = [
         {
                 id: 29,
                 uuid: 'bd9b1cda-ba28-45bd-8514-a87f066211b0',
-                name: 'Сок томатный, с/б, 3л',
+                name: 'Сок томатный',
                 price: 89.30,
                 group: 'Консервированная продукция',
                 stock: 163,
-                units: 'банка'
+                units: 'пачку 3л'
         },
         {
                 id: 30,
@@ -342,41 +306,119 @@ var catalog = [
                 price: 60.00,
                 group: 'Консервированная продукция',
                 stock: 398,
-                units: 'банка'
+                units: 'банку'
         },
 ]
 
-countCatalogPrice()
-//countCartPrice()
-//console.log('Вы добавили в корзину весь наш каталог!')
-//Object.assign(cart,catalog)
-//countCartPrice()
-
+//Функция отрисовки каталога товаров
 function renderMyCatalog(){
+        document.querySelectorAll('.products').forEach(div => div.remove()); //Очищает предыдущий каталог, чтобы зарендерить новый
     for (let i = 0; i < catalog.length; i++) {
-        let catalogProducts = document.createElement("p");
-            catalogProducts.textContent = catalog[i].name;
-            document.querySelector('.catalog').appendChild(catalogProducts);
-        }
-                catalogProducts = document.createElement("p");
-                catalogProducts.textContent = countCatalogPrice();
-                catalogProducts.id = "sum"
-                document.querySelector('.catalog').appendChild(catalogProducts);
-        countCatalogPrice()
+        let createNewProduct = document.createElement("p");
+        let createBuyButton = document.createElement("button");
+        let createNewDivByID = document.createElement("div");
+        let createStockCount = document.createElement("li")
+            createNewDivByID.className = `product${catalog[i].id} products`
+            createNewProduct.textContent = `Название: ${catalog[i].name}; цена за 1${catalog[i].units}: ${FloatDisplayPrice(catalog[i].price)}`;
+            createBuyButton.textContent = `${catalog[i].price.toFixed(2)}руб | добавить в корзину`;
+            createBuyButton.id = `button${catalog[i].id}`
+            createBuyButton.name = `${i+1}`
+            createStockCount.className = `instock${i+1} stock`
+            createStockCount.textContent = `В наличии: ${catalog[i].stock} шт.`
+            document.querySelector('.catalog').appendChild(createNewDivByID);
+            document.querySelector(`.product${i+1}`).appendChild(createNewProduct);
+            document.querySelector(`.product${i+1}`).appendChild(createBuyButton);
+            document.querySelector(`.product${i+1}`).appendChild(createStockCount);
+            let button = document.getElementById(`button${i+1}`)
+            button.addEventListener('click',onButtonClickCatalog)
+            if (i==catalog.length-1) {
+                let createLastDIV = document.createElement("div");
+                createNewProduct = document.createElement("h2");
+                createNewProduct.textContent = countCatalogPrice();
+                createNewProduct.id = "sum"
+                createLastDIV.className = "sumcatalog products"
+                document.querySelector('.catalog').appendChild(createLastDIV)
+                document.querySelector('.sumcatalog').appendChild(createNewProduct);
+                countCatalogPrice()
+            }
+        }              
 }
 
+//Функция отрисовки корзины
 function renderMyCart(){
-        
-    for (let i = 0; i < cart.length; i++) {
-        let cartProducts = document.createElement("p");
-            cartProducts.textContent = cart[i].name;
-            document.querySelector('.cart').appendChild(cartProducts);
+        //Очищает карзину, чтобы зарендерить пересчитанную новую
+        document.querySelectorAll('.cartproducts').forEach(div => div.remove());      
+        if (cart.items.length===0) { //Проверка на условие пустой корзины
+                createFoolDIV = document.createElement("div")
+                createNewProduct = document.createElement("h2");
+                createNewProduct.textContent = countCartPrice();
+                createNewProduct.id = "sumcart"
+                createFoolDIV.className = "sumcart cartproducts"
+                document.querySelector('.cart').appendChild(createFoolDIV)
+                document.querySelector('.sumcart').appendChild(createNewProduct); 
+        } else {
+                for (let i = 0; i < cart.items.length; i++) {
+                let createNewProduct = document.createElement("p");
+                let createBuyButton = document.createElement("button");
+                        createNewProduct.className = `cartbutton${i+1}`
+                        createNewProduct.textContent = `Название: ${cart.items[i].name}; цена за 1${cart.items[i].units}: ${FloatDisplayPrice(cart.items[i].price)}`;
+                        createBuyButton.textContent = `${cart.items[i].price.toFixed(2)}руб | удалить`;
+                        createBuyButton.id = `cartbutton${i+1}`
+                        createBuyButton.className = `cartbutton${i+1}`
+                        createBuyButton.name = `${i+1}`
+                        let createNewDivByID = document.createElement("div");
+                        createNewDivByID.className = `cartproduct${cart.items[i].id} cartproducts`
+                        document.querySelector('.cart').appendChild(createNewDivByID);
+                        document.querySelector(`.cartproduct${cart.items[i].id}`).appendChild(createNewProduct);
+                        document.querySelector(`.cartproduct${cart.items[i].id}`).appendChild(createBuyButton);
+                        let button = document.getElementById(`cartbutton${i+1}`)
+                        button.addEventListener('click',onButtonClickCart)
+                                //Для удаления пустых блоков div при обновлении корзины, в случае, если пользователь добавил такой же товар
+                                for (let j=0; j<document.getElementsByClassName(`cartproducts`).length; j++){
+                                if (document.getElementsByClassName(`cartproducts`)[j].childElementCount == 0) {
+                                        document.getElementsByClassName(`cartproducts`)[j].remove()}}
+                        //Для поиска последнего блока div, чтобы отрисовывать там сумму
+                        if (i==cart.items.length-1) {
+                        let createLastDIV = document.createElement("div");
+                        createNewProduct = document.createElement("h2");
+                        createNewProduct.textContent = countCartPrice();
+                        createNewProduct.id = "sumcart"
+                        createLastDIV.className = "sumcart cartproducts"
+                        document.querySelector('.cart').appendChild(createLastDIV)
+                        document.querySelector('.sumcart').appendChild(createNewProduct);
+                        let createButtonClearCart = document.createElement("button")
+                        createButtonClearCart.textContent = "Очистить корзину!"
+                        createButtonClearCart.id = "cartClearButton"
+                        document.querySelector('.sumcart').appendChild(createButtonClearCart)
+                        button = document.getElementById("cartClearButton")
+                        button.addEventListener('click',onButtonClickCartClick)
+                        }
+                }
         }
-                cartProducts = document.createElement("p");
-                cartProducts.textContent = countCartPrice();
-                cartProducts.id = "sum"
-                document.querySelector('.cart').appendChild(cartProducts);
-        countCartPrice()
+}
+
+//Функция нажатия на кнопку из HTML документа в каталоге
+function onButtonClickCatalog(event) {
+        let i = +`${event.target.name}`
+        //debugger
+        cart.items.push(catalog[i-1])
+        renderMyCart()
+        console.log(`Через кнопку ${event.target.id} товар был добавлен в корзину!`)
+}
+
+function onButtonClickCart(event) {
+        let i = +`${event.target.name}`
+        //debugger
+        cart.items.splice(i-1,1)
+        renderMyCart()
+        console.log(`Через кнопку ${event.target.id} вы удалили товар номер ${i} из корзины!`)
+}
+
+function onButtonClickCartClick(event) {
+        //debugger
+        cart.items.splice(0,cart.items.length)
+        renderMyCart()
+        console.log(`Через кнопку ${event.target.id} вы полностью очистили корзину!`)
 }
 
 renderMyCatalog()

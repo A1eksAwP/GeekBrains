@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>JS-решения №1</title>
+	<style>
+
+    
+.imagesmall {
+	border: none;
+	cursor: pointer;
+	background-color: #000;
+	color: #fff;
+	padding: 10px;
+  display: flex;
+  flex-direction: row;
+}
+
+.modal-overlay {
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.7);
+	display: flex;
+	height: 100vh;
+	/* width: 100%; */
+	opacity: 0;
+	visibility: hidden;
+	transition: all 0.3s ease-in-out;
+	align-items: center;
+	justify-content: center;
+}
+
+.modal {
+	background-color: #fff;
+	width: 800px;
+	height: 800px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	display: none;
+}
+
+.modal-overlay--visible {
+	opacity: 1;
+	visibility: visible;
+	transition: all 0.3s ease-in-out;
+}
+
+.modal--visible {
+	display: block;
+}
+
+    </style>
+</head>
+<body>
+	<div class="imagesmall" data-path="popup">1
+  <img id="48" src="https://picsum.photos/id/48/180/180" alt="Рандомная картинка" class="smallImg1">
+  </div>
+	<div class="imagesmall" data-path="popup">2
+  <img id="961" src="https://picsum.photos/id/961/180/180" alt="Рандомная картинка" class="smallImg24">
+  </div>
+  <div class="imagesmall" data-path="popup">3
+  <img id="418" src="https://picsum.photos/id/418/180/180" alt="Рандомная картинка" class="smallImg3">
+  </div>
+  <div class="imagesmall" data-path="popup">4
+  <img id="861" src="https://picsum.photos/id/861/180/180" alt="Рандомная картинка" class="smallImg22">
+  </div>
+
+
+	<div class="modals">
+		<div class="modal-overlay">
+    
+			<div class="modal modal--1" data-target="popup">
+				<img id="48" src="https://picsum.photos/id/700/800/800" alt="Рандомная картинка" class="fullImg">
+			</div>
+      
+		</div>
+	</div>
+
+	<script>
+
+const btns = document.querySelectorAll('.imagesmall');
+const modalOverlay = document.querySelector('.modal-overlay');
+const modals = document.querySelectorAll('.modal');
+
+btns.forEach((element) => {
+	element.addEventListener('click', (e) => {
+		let path = e.currentTarget.getAttribute('data-path');
+        //debugger
+		let pathimg = e.currentTarget.querySelector(".imagesmall > img").id
+		modals.forEach((el) => {
+			el.classList.remove('modal--visible');
+		});
+
+		document.querySelector(`[data-target="${path}"]`).classList.add('modal--visible');
+    document.querySelector(`.fullImg`).src = `https://picsum.photos/id/${pathimg}/800/800`
+		modalOverlay.classList.add('modal-overlay--visible');
+	});
+});
+
+modalOverlay.addEventListener('click', (e) => {
+	//console.log(e.target);
+	if (e.target == modalOverlay) {
+		modalOverlay.classList.remove('modal-overlay--visible');
+		modals.forEach((el) => {
+			el.classList.remove('modal--visible');
+		});
+	}
+});
+
+    </script>
+</body>
+</html>
