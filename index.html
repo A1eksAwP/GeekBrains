@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+        <meta charset="utf-8">
+        <title>Магазин несуществующих товаров</title>
+        <link rel="stylesheet" href="homework7.css">
+</head>
+
+<body>
+
+        <div class="modals">
+                <div class="modal-overlay">
+                        <div class="modal modal--1" data-target="img180px">
+                                <img id="700" src="https://picsum.photos/id/700/800/800" alt="Рандомная картинка" class="fullImg">
+                        </div>
+                </div>
+        </div>
+       
+        <div class=container>
+                
+                <div class="catalog menu" title="Каталог наших товаров. Купи их все!"><h1 class="headtitle">Каталог</h1></div>
+                <div class="cart menu cartpos" title="Твоя замечательная корзина." style="position: inherit"><h1 class="headtitle">Корзина</h1>
+                                <section><h1 class="sectiontext">Структура корзины</h1><div class="carts structure --active"></div></section>
+                        <section><h1 class="sectiontext">Адрес доставки</h1><div class="ship"></div></section>
+                                <div class="carts address">
+                                        <form method="post">
+                                                <div>
+                                                        <label for="name">Имя:</label>
+                                                        <input placeholder="Как тебя зовут?" type="text" id="name" name="user_name" />
+                                                </div>
+                                                <div>
+                                                        <label for="mail">E-mail:</label>
+                                                        <input placeholder="Как с тобой связаться?" type="email" id="mail" name="user_email" />
+                                                </div>
+                                                <div>
+                                                        <label for="city">Город:</label>
+                                                        <input placeholder="Укажи из какого ты города" type="text" id="city" name="user_city" />
+                                                </div>
+                                                <div>
+                                                        <label for="street">Улица:</label>
+                                                        <input placeholder="На какой улице живешь" type="text" id="street" name="user_street" />     
+                                                </div>
+                                                <div>
+                                                        <label for="home">Дом:</label>
+                                                        <input placeholder="Какой у тебя номер дома" type="text" id="home" name="user_home" />
+                                                </div>
+                                                <div>
+                                                        <label for="apartment">Квартира:</label>
+                                                        <input placeholder="Номер квартиры" type="text" id="apartment" name="user_apartment" />
+                                                </div>
+                                        </form>
+                                        <button class="btnnext" id="cartShipButton" onclick="onButtonBuyClick()">Продолжить</button>
+                                </div>
+                                
+                        <section><h1 class="sectiontext">Комментарий</h1><div class="carts comment">
+                                <textarea name="" id="" cols="30" rows="10"></textarea><button class="btnnext" id="cartCommentButton" onclick="onButtonBuyClick()">Отправить заявку!</button>
+                        </div></section>
+                                
+                        <button class="btnsticky" onclick="togglesticky()">Закрепить корзину | (BETA)</button>
+                </div>
+                
+        </div>
+        <script src="homework7.js"></script>
+</body>
+</html>
