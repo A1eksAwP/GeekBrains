@@ -1,0 +1,91 @@
+.main-block{
+    width: 640px;
+    height: 640px;
+    margin: 0 auto;
+    border: 10px solid rgb(121, 75, 75);
+    margin-top: 50px;
+}
+
+.back-block{
+    width: 760px;
+    height: 760px;
+    margin: 0 auto;
+    margin-top: 50px;
+    border: 10px solid rgb(44, 5, 5);
+    background: rgb(180, 118, 25);
+}
+    
+.block {
+    width: 80px;
+    height: 80px;
+    float: left;
+}
+    
+.black {
+    background: rgb(151 119 93)
+}
+    
+.white {
+    background: rgb(231, 192, 140);
+}
+
+.upperdiv {
+    position: absolute;
+    top: 440px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    height: 700px;
+    font-size: 28px;
+    list-style: none;
+    font-family:monospace;
+    color: #2c0505;
+}
+
+.labels {
+    height: 100%;
+    width: 5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    text-align: center;
+    position: relative;
+    left: -20px;
+}
+
+.numbers {
+    position: absolute;
+    width: 100%;
+    bottom: -20px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.labels-mirror {
+    height: 100%;
+    width: 5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    text-align: center;
+    position: relative;
+    left: 690px;
+    top: -700px;
+}
+
+.numbers-mirror {
+    position: absolute;
+    width: 100%;
+    bottom: 690px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.figure {
+position: relative;
+left: 8px;
+top: 5px;
+width: 65px;
+}

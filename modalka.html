@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>JS-решения №1</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<button class="btn" data-path="popup1">1
+  <img id="48" src="https://picsum.photos/id/48/180/180" alt="Рандомная картинка" class="smallImg1">
+  </button>
+	<button class="btn" data-path="popup2">2
+  <img id="961" src="https://picsum.photos/id/961/180/180" alt="Рандомная картинка" class="smallImg24">
+  </button>
+  <button class="btn" data-path="popup3">3
+  <img id="418" src="https://picsum.photos/id/418/180/180" alt="Рандомная картинка" class="smallImg3">
+  </button>
+	<button class="btn" data-path="popup4">4
+  <img id="861" src="https://picsum.photos/id/861/180/180" alt="Рандомная картинка" class="smallImg22">
+  </button>
+
+
+	<div class="modals">
+		<div class="modal-overlay">
+    
+			<div class="modal modal--1" data-target="popup1">
+				<img id="48" src="https://picsum.photos/id/48/800/800" alt="Рандомная картинка" class="fullImg1">
+			</div>
+      
+			<div class="modal modal--2" data-target="popup2">
+				<img id="961" src="https://picsum.photos/id/961/800/800" alt="Рандомная картинка" class="smallImg24">
+			</div>
+      
+      	<div class="modal modal--3" data-target="popup3">
+				<img id="418" src="https://picsum.photos/id/418/800/800" alt="Рандомная картинка" class="fullImg3">
+			</div>
+      
+			<div class="modal modal--4" data-target="popup4">
+				<img id="861" src="https://picsum.photos/id/861/800/800" alt="Рандомная картинка" class="smallImg22">
+			</div>
+      
+		</div>
+	</div>
+
+	<script src="script.js"></script>
+</body>
+</html>
+
+
+
+const btns = document.querySelectorAll('.btn');
+const modalOverlay = document.querySelector('.modal-overlay');
+const modals = document.querySelectorAll('.modal');
+
+btns.forEach((element) => {
+	element.addEventListener('click', (e) => {
+		let path = e.currentTarget.getAttribute('data-path');
+
+		modals.forEach((el) => {
+			el.classList.remove('modal--visible');
+		});
+
+		document.querySelector(`[data-target="${path}"]`).classList.add('modal--visible');
+		modalOverlay.classList.add('modal-overlay--visible');
+	});
+});
+
+modalOverlay.addEventListener('click', (e) => {
+	console.log(e.target);
+	if (e.target == modalOverlay) {
+		modalOverlay.classList.remove('modal-overlay--visible');
+		modals.forEach((el) => {
+			el.classList.remove('modal--visible');
+		});
+	}
+});
+
+
+
+.btn {
+	border: none;
+	cursor: pointer;
+	background-color: #000;
+	color: #fff;
+	padding: 10px;
+}
+
+.modal-overlay {
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.7);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	width: 100%;
+	opacity: 0;
+	visibility: hidden;
+	transition: all 0.3s ease-in-out;
+}
+
+.modal {
+	background-color: #fff;
+	width: 600px;
+	height: 600px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	display: none;
+}
+
+.modal-overlay--visible {
+	opacity: 1;
+	visibility: visible;
+	transition: all 0.3s ease-in-out;
+}
+
+.modal--visible {
+	display: block;
+}
