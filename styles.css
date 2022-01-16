@@ -1,0 +1,134 @@
+html, body {
+    font-family: monospace, sans-serif;
+    height: 100%;
+    margin: 0;
+}
+
+.game {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    height: 100%;
+    justify-content: center;
+}
+
+.score {
+    font-size: 50px;
+    color: rgb(200, 200, 200);
+}
+
+.game.started .score {
+    color: rgb(82, 205, 50);
+}
+.game.paused .score {
+    color: rgb(233, 158, 6);
+}
+.game.stopped .score {
+    color: rgb(233, 6, 6);
+}
+
+.board {
+    display: grid;
+    grid-template-rows: repeat(16, 1fr);
+    grid-template-columns: repeat(16, 1fr);
+    height: 600px;
+    width: 600px;
+    background-color: #5b5b5b;
+    border: rgb(163 163 163) 3px solid;
+}
+.board .cell {
+    border: rgb(221 211 185) 1px solid;
+    box-shadow: 0 0 4px 6px rgb(0 0 0 / 8%);
+}
+.board .cell.snake {
+    background-color: rgb(7 145 192);
+    animation: snakepulse 4s infinite ease-in-out;
+}
+.board .cell.food {
+    background-color: rgb(206, 65, 187);
+    animation: fruitpulse 1.5s infinite ease-in-out;
+    margin: 5px;
+    border-radius: 2px;
+}
+.game.started .board .cell {
+    border-color: rgb(187 187 187);
+}
+.game.paused .board .cell {
+    border-color: rgb(233, 158, 6);
+}
+.game.stopped .board .cell {
+    border-color: rgb(255 118 118 / 70%);
+}
+
+.buttons button {
+    background-color: transparent;
+    margin: 10px;
+    line-height: 31px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 0 15px;
+    border: rgb(200, 200, 200) 1px solid;
+}
+
+.buttons button.restart {
+    border-color: rgb(82, 205, 50);
+    color: rgb(82, 205, 50);
+}
+.buttons button.restart:hover {
+    border-color: rgba(82, 205, 50, 0.5);
+    color: rgba(82, 205, 50, 0.5);
+}
+.buttons button.restart:active {
+    border-color: rgba(25, 88, 28, 0.8);
+    color: rgba(25, 88, 28, 0.8);
+}
+
+.buttons button.pause {
+    border-color: rgb(233, 158, 6);
+    color: rgb(233, 158, 6);
+}
+.buttons button.pause:hover {
+    border-color: rgba(233, 158, 6, 0.5);
+    color: rgba(233, 158, 6, 0.5);
+}
+.buttons button.pause:active {
+    border-color: rgba(250, 81, 29, 0.8);
+    color: rgba(250, 81, 29, 0.8);
+}
+
+.buttons button.stop {
+    border-color: rgb(233, 6, 6);
+    color: rgb(233, 6, 6);
+}
+.buttons button.stop:hover {
+    border-color: rgba(233, 6, 6, 0.5);
+    color: rgba(233, 6, 6, 0.5);
+}
+.buttons button.stop:active {
+    border-color: rgba(90, 21, 0, 0.8);
+    color: rgba(90, 21, 0, 0.8);
+}
+
+@keyframes fruitpulse {
+    25% {transform: scale(0.8) rotate(-180deg);}
+    50% {transform: scale(0.8) rotate(-7deg); opacity: 0.8;}
+    75% {transform: scale(0.9) rotate(7deg); opacity: 0.9;}
+    100% {transform: scale(1); opacity: 1;}
+}
+
+@keyframes snakepulse {
+    50% {transform: scale(0.5) rotate(45deg);}
+    100% {transform: scale(1) rotate(0deg); opacity: 1;}
+}
+
+.cell.snake.head {
+    background-color: rgb(36, 33, 206);
+    transform: scale(1.2);
+  }
+
+.cell.snake.snakebreak {
+    background-color: #e79c1ef7;
+    color: red;
+    transform: scale(1.6);
+}
