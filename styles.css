@@ -15,6 +15,10 @@ html, body {
 .score {
     font-size: 50px;
     color: rgb(200, 200, 200);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: gamescorepulse 5s infinite ease-in-out;
 }
 
 .game.started .score {
@@ -24,7 +28,7 @@ html, body {
     color: rgb(233, 158, 6);
 }
 .game.stopped .score {
-    color: rgb(233, 6, 6);
+    color: rgb(255 118 118 / 70%);
 }
 
 .board {
@@ -35,9 +39,12 @@ html, body {
     width: 600px;
     background-color: #5b5b5b;
     border: rgb(163 163 163) 3px solid;
+    background: #5b5b5b;
+    padding: 20px;
+    margin-top: 20px;
 }
 .board .cell {
-    border: rgb(221 211 185) 1px solid;
+    border: rgb(221 211 185) 0.5px solid;
     box-shadow: 0 0 4px 6px rgb(0 0 0 / 8%);
 }
 .board .cell.snake {
@@ -59,6 +66,17 @@ html, body {
 .game.stopped .board .cell {
     border-color: rgb(255 118 118 / 70%);
 }
+
+.game.started .board {
+    border: rgb(82, 205, 50) 5px solid;
+}
+.game.paused .board {
+    border: rgb(233, 158, 6) 5px solid;
+}
+.game.stopped .board {
+    border: rgb(255 118 118 / 70%) 5px solid;
+}
+
 
 .buttons button {
     background-color: transparent;
@@ -129,6 +147,30 @@ html, body {
 
 .cell.snake.snakebreak {
     background-color: #e79c1ef7;
-    color: red;
-    transform: scale(1.6);
+    transform: scale(1.6) rotate(45deg);
+    animation: snakepulse 0.5s infinite ease-in-out;
+}
+
+ .game .board.pulse{
+    animation: boardpulse 0.25s ease-in-out;
+}
+
+.game.paused .board{
+    animation: boardpause 1.5s infinite ease-in-out;
+}
+
+@keyframes boardpulse {
+    20%{transform: scale(0.95);border: rgb(248, 32, 165) 5px solid;opacity: 0.9}
+    60%{transform: scale(1.1); border: rgb(73, 43, 241) 5px solid;opacity: 1}
+}
+
+@keyframes gamescorepulse {
+    50%{transform: scale(0.95)}
+    75%{transform: scale(1.05)}
+}
+
+@keyframes boardpause {
+    25%{transform: scale(0.92)rotate(2deg);}
+    50%{transform: scale(1)rotate(0deg);}
+    75%{transform: scale(0.92)rotate(-2deg);}
 }
