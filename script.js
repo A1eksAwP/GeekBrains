@@ -35,6 +35,10 @@ const game = {
     /**
      * Функция выполняет старт игры.
      */
+    timer() {
+        // debugger
+        // setInterval(game.move, 1000);
+    },
     start() {
         this.setGameStatus(GAME_STATUS_STARTED);
         window.addEventListener('keydown', game.move);
@@ -42,10 +46,13 @@ const game = {
         board.render();
         snake.parts = [{ top: 0, left: 0 },{ top: 0, left: 1 },{ top: 0, left: 2 },], //UPD: возвращает змейке стандартное положение
         snake.render();
-        game.score = 0;
+        game.score = 0; //UPD: сбрасываем очки при каждом перезапуске игры
         document.getElementsByClassName('value')[0].innerText = `SCORE: ${game.score}`
         food.items = [{ top: 5, left: 2 },{ top: 12, left: 10 },{ top: 7, left: 14 }], //UPD: возвращает фруктам стандартное положение
         food.render();
+        game.continue()
+        snake.direction = SNAKE_DIRECTION_RIGHT //UPD: возвращает по умолчанию вправо, так как был баг, если змейка при столкновении двигалась вверх или влево
+        document.getElementsByClassName('status')[0].innerText = "Игра запущена"
     },
 
     /**
@@ -60,6 +67,7 @@ const game = {
         pauseButton.addEventListener('click', game.pause.bind(game));
         pauseButton.innerText = 'Пауза'
         console.log("Вы продолжили игру!")
+        document.getElementsByClassName('status')[0].innerText = "Игра запущена"
         }
     },
 
@@ -72,6 +80,9 @@ const game = {
         pauseButton.addEventListener('click', game.continue.bind(game));
         pauseButton.innerText = 'Продолжить'
         console.log("Игра была поставлена пользователем на паузу")
+        document.getElementsByClassName('status')[0].innerText = "Пауза"
+        document.querySelectorAll(".board")[0].classList.toggle("pulse")
+        setTimeout(board.foodFinded, 260);
         }
         /* добавить сюда код */
     },
@@ -80,6 +91,7 @@ const game = {
      * Функция останавливает игру.
      */
     stop() {
+        document.getElementsByClassName('status')[0].innerText = "Конец игры"
         this.setGameStatus(GAME_STATUS_STOPPED);
         window.removeEventListener('keydown', game.move);
         document.querySelectorAll(".snake").forEach((snakes) => {snakes.remove()})
@@ -90,10 +102,6 @@ const game = {
         pauseButton.removeEventListener('click', game.pause.bind(game));
         pauseButton.removeEventListener('click', game.continue.bind(game));
         console.log("Игра окончена!")
-        
-        
-
-
         /* добавить сюда код */
     },
 
@@ -103,27 +111,31 @@ const game = {
      * @param event {KeyboardEvent} Событие нажатия на клавишу.
      */
     move(event) {
-        let direction = null;
+        let direction = snake.direction;
         /* смотрим на код клавиши и
          * устанавливаем соответсвующее направление движения */
+        // debugger
         if (game.nowstatus!=="stopped"){
-        switch (event.keyCode) {
-            case 38:
-                direction = SNAKE_DIRECTION_UP;
-                break;
-            case 40:
-                direction = SNAKE_DIRECTION_DOWN;
-                break;
-            case 37:
-                direction = SNAKE_DIRECTION_LEFT;
-                break;
-            case 39:
-                direction = SNAKE_DIRECTION_RIGHT;
-                break;
-            default:
-                return;
-        }
-    }
+            if (event.keyCode){
+                switch (event.keyCode) {
+                    case 38:
+                        direction = SNAKE_DIRECTION_UP;
+                        break;
+                    case 40:
+                        direction = SNAKE_DIRECTION_DOWN;
+                        break;
+                    case 37:
+                        direction = SNAKE_DIRECTION_LEFT;
+                        break;
+                    case 39:
+                        direction = SNAKE_DIRECTION_RIGHT;
+                        break;
+                    default:
+                        return;
+                }
+            }
+        
+        }   
 
         /* устанавливаем позицию для змейки
          * и запрашиваем координаты следующей позиции */
@@ -165,6 +177,10 @@ const game = {
 
         /* перерендериваем змейку */
         snake.render();
+        //!!!!!!!!!!!!!!
+        // debugger
+        // setInterval(game.move, 1000);
+        //!!!!!!!!!!!!!!
     },
 
     /**
@@ -199,6 +215,10 @@ const board = {
      */
     getElement() {
         return document.getElementById('board');
+    },
+
+    foodFinded(){
+        document.querySelectorAll(".board")[0].classList.toggle("pulse")
     },
 
     /**
@@ -332,7 +352,9 @@ const snake = {
         for (part in snake.parts) {
             if (position.top == snake.parts[part].top && position.left == snake.parts[part].left) {
                 console.log("Ты врезался сам в себя!")
+                
                 game.stop();
+                document.getElementsByClassName('status')[0].innerText = "Ты врезался сам в себя!"
                 break
             }
         }
@@ -341,8 +363,10 @@ const snake = {
          * чтобы змейка выходя за границы возвращалась обратно на поле */
         if (position.top === -1 || position.left === -1 || position.top > config.size - 1 || position.left > config.size - 1) {
             console.log("Ты врезался в стену!")
+            
             game.stop();
             position.top = snake.parts[snake.parts.length-1].top; position.left = snake.parts[snake.parts.length-1].left
+            document.getElementsByClassName('status')[0].innerText = "Ты врезался в стену!"
             return position
         } else {return position;}
         } else {position.top = snake.parts[snake.parts.length-1].top; position.left = snake.parts[snake.parts.length-1].left
@@ -449,7 +473,7 @@ const food = {
             }
             for (fruit in food.items) {
                 if (newItem.top == food.items[fruit].top && newItem.left == food.items[fruit].left) {
-                    food.generateItem()
+                    return food.generateItem()
                 }
             }
         food.items.push(newItem);
@@ -460,6 +484,8 @@ const food = {
      */
     render() {
         cells.renderItems(this.items, 'food');
+        document.querySelectorAll(".board")[0].classList.toggle("pulse")
+        setTimeout(board.foodFinded, 260);
     }
 };
 
