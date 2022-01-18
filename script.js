@@ -6,6 +6,11 @@ const SNAKE_DIRECTION_UP = 'up';
 const SNAKE_DIRECTION_DOWN = 'down';
 const SNAKE_DIRECTION_LEFT = 'left';
 const SNAKE_DIRECTION_RIGHT = 'right';
+let getUserDelay = [250, 100, 60, 40]
+let timer;
+let lastEvent = {keyCode: 39};
+let diff = 0;
+const DIFFICULTY = ['easy', 'medium', 'hard', 'hardcore']
 
 /**
  * Объект с настройками конфигурации игры
@@ -32,17 +37,36 @@ const game = {
         return document.getElementById('game');
     },
 
+    
     /**
      * Функция выполняет старт игры.
      */
-    timer() {
-        // debugger
-        // setInterval(game.move, 1000);
+    setDelay() {
+        // timer = setInterval(() => this.move(), 150);
+        if (game.nowstatus == 'paused' || game.nowstatus == 'stopped' ){
+            clearTimeout(timer)
+        } else if (game.nowstatus == 'started') {
+            timer = setTimeout(function delay() {
+                if (game.nowstatus == GAME_STATUS_STARTED){
+                console.log('step!');
+                game.move();
+                timer = setTimeout(delay, getUserDelay[diff])
+                }
+            }, 0);
+        } else clearTimeout(timer)
     },
     start() {
-        this.setGameStatus(GAME_STATUS_STARTED);
+        console.log('Сработала функция START')
+        document.getElementsByClassName('restart')[0].innerText = 'Перезапуск'
+        lastEvent = {keyCode: 39}
+        const pauseButton = document.getElementById('button-pause');
+        pauseButton.removeEventListener('click', game.continue);
+        pauseButton.addEventListener('click', game.pause);
+        pauseButton.innerText = 'Пауза'
+        game.setGameStatus(GAME_STATUS_STARTED);
         window.addEventListener('keydown', game.move);
-        document.querySelectorAll(".cell").forEach((node) => {node.remove()}) //UPD: удаляет предыдущее отредендеренное поле
+        lastEvent.keyCode = ''
+        document.querySelectorAll('.cell').forEach((node) => {node.remove()}) //UPD: удаляет предыдущее отредендеренное поле
         board.render();
         snake.parts = [{ top: 0, left: 0 },{ top: 0, left: 1 },{ top: 0, left: 2 },], //UPD: возвращает змейке стандартное положение
         snake.render();
@@ -52,37 +76,45 @@ const game = {
         food.render();
         game.continue()
         snake.direction = SNAKE_DIRECTION_RIGHT //UPD: возвращает по умолчанию вправо, так как был баг, если змейка при столкновении двигалась вверх или влево
-        document.getElementsByClassName('status')[0].innerText = "Игра запущена"
+        document.getElementsByClassName('status')[0].innerText = 'Игра запущена'
+        game.setDelay();
+        
     },
 
     /**
      * Функция выполняет паузу игры.
      */
     continue() {
-        if (game.nowstatus != "stopped"){
-        this.setGameStatus(GAME_STATUS_STARTED);
-        window.addEventListener('keydown', game.move);
-        const pauseButton = document.getElementById('button-pause');
-        pauseButton.removeEventListener('click', game.continue.bind(game));
-        pauseButton.addEventListener('click', game.pause.bind(game));
-        pauseButton.innerText = 'Пауза'
-        console.log("Вы продолжили игру!")
-        document.getElementsByClassName('status')[0].innerText = "Игра запущена"
+        console.log('Сработала функция CONTINUE')
+        clearTimeout(timer)
+        if (game.nowstatus == GAME_STATUS_PAUSED){
+            game.setGameStatus(GAME_STATUS_STARTED);
+            window.addEventListener('keydown', game.move);
+            game.setDelay();
+            const pauseButton = document.getElementById('button-pause');
+            pauseButton.removeEventListener('click', game.continue);
+            pauseButton.addEventListener('click', game.pause);
+            pauseButton.innerText = 'Пауза'
+            console.log('Вы продолжили игру!')
+            document.getElementsByClassName('status')[0].innerText = 'Игра запущена'
+            
         }
     },
 
     pause() {
-        if (game.nowstatus != "stopped") {
-        this.setGameStatus(GAME_STATUS_PAUSED);
+        console.log('Сработала функция PAUSE')
+        if (game.nowstatus == GAME_STATUS_STARTED) {
+        game.setGameStatus(GAME_STATUS_PAUSED);
         window.removeEventListener('keydown', game.move);
         const pauseButton = document.getElementById('button-pause');
-        pauseButton.removeEventListener('click', game.pause.bind(game));
-        pauseButton.addEventListener('click', game.continue.bind(game));
+        pauseButton.removeEventListener('click', game.pause);
+        pauseButton.addEventListener('click', game.continue);
         pauseButton.innerText = 'Продолжить'
-        console.log("Игра была поставлена пользователем на паузу")
-        document.getElementsByClassName('status')[0].innerText = "Пауза"
-        document.querySelectorAll(".board")[0].classList.toggle("pulse")
+        console.log('Игра была поставлена пользователем на паузу')
+        document.getElementsByClassName('status')[0].innerText = 'Пауза'
+        document.querySelectorAll('.board')[0].classList.toggle('pulse')
         setTimeout(board.foodFinded, 260);
+        return game.nowstatus = GAME_STATUS_PAUSED
         }
         /* добавить сюда код */
     },
@@ -91,17 +123,21 @@ const game = {
      * Функция останавливает игру.
      */
     stop() {
-        document.getElementsByClassName('status')[0].innerText = "Конец игры"
-        this.setGameStatus(GAME_STATUS_STOPPED);
+        console.log('Сработала функция STOP')
+        document.getElementsByClassName('status')[0].innerText = 'Конец игры'
+        game.setGameStatus(GAME_STATUS_STOPPED);
+        // if (game.nowstatus === GAME_STATUS_STOPPED) {
+        clearTimeout(timer)
         window.removeEventListener('keydown', game.move);
-        document.querySelectorAll(".snake").forEach((snakes) => {snakes.remove()})
-        document.querySelectorAll(".cell").forEach((node) => {node.remove()})
+        document.querySelectorAll('.snake').forEach((snakes) => {snakes.remove()})
+        document.querySelectorAll('.cell').forEach((node) => {node.remove()})
         board.render();
         food.render();
         const pauseButton = document.getElementById('button-pause');
         pauseButton.removeEventListener('click', game.pause.bind(game));
         pauseButton.removeEventListener('click', game.continue.bind(game));
-        console.log("Игра окончена!")
+        console.log('Игра окончена!')
+        // }
         /* добавить сюда код */
     },
 
@@ -111,11 +147,18 @@ const game = {
      * @param event {KeyboardEvent} Событие нажатия на клавишу.
      */
     move(event) {
+        // debugger
+        if (game.nowstatus == GAME_STATUS_PAUSED) return
+        if (event) {
+            lastEvent = event;
+          } else {
+            event = lastEvent;
+          }
         let direction = snake.direction;
         /* смотрим на код клавиши и
          * устанавливаем соответсвующее направление движения */
         // debugger
-        if (game.nowstatus!=="stopped"){
+        if (game.nowstatus===GAME_STATUS_STARTED){
             if (event.keyCode){
                 switch (event.keyCode) {
                     case 38:
@@ -137,29 +180,26 @@ const game = {
         
         }   
 
-        /* устанавливаем позицию для змейки
-         * и запрашиваем координаты следующей позиции */
         snake.setDirection(direction);
         const nextPosition = snake.getNextPosition();
-
         /* проверяем совпадает ли следующая позиция с какой-нибудь едой */
         const foundFood = food.foundPosition(nextPosition);
 
         /* если найден индекс еды (то есть позиция совпадает) */
         if (foundFood !== -1) {
-            /* устанавливаем следующую позицию змейки с вторым параметром "не удалять хвост змейки",
+            /* устанавливаем следующую позицию змейки с вторым параметром 'не удалять хвост змейки',
              * змейка съев еду вырастает на одну клетку */
             snake.setPosition(nextPosition, false);
-            if (snake.parts.length>config.size/4){ game.score+=25 } else {game.score+=100}
-            if (snake.parts.length>config.size/4*2){ game.score+=50}
-            if (snake.parts.length>config.size/4*3){ game.score+=100}
-            if (snake.parts.length>config.size/4*4){ game.score+=250}
-            if (snake.parts.length>config.size/4*5){ game.score+=500}
-            if (snake.parts.length>config.size/4*6){ game.score+=1000}
-            if (snake.parts.length>config.size/4*7){ game.score+=10000}
-            if (snake.parts.length>config.size/4*8){ game.score+=100000}
-            if (snake.parts.length>config.size/4*9){ game.score+=1000000}
-            if (snake.parts.length>config.size/4*10){ game.score+=5000000}
+            if (snake.parts.length>config.size/4){ game.score+=25+100*diff} else {game.score+=100}
+            if (snake.parts.length>config.size/4*2){ game.score+=50+1000*diff}
+            if (snake.parts.length>config.size/4*3){ game.score+=100+1000*diff}
+            if (snake.parts.length>config.size/4*4){ game.score+=250+1000*diff}
+            if (snake.parts.length>config.size/4*5){ game.score+=500+10000*diff}
+            if (snake.parts.length>config.size/4*6){ game.score+=1000+100000*diff}
+            if (snake.parts.length>config.size/4*7){ game.score+=10000+100000*diff}
+            if (snake.parts.length>config.size/4*8){ game.score+=100000+100000*diff}
+            if (snake.parts.length>config.size/4*9){ game.score+=1000000+10000000*diff}
+            if (snake.parts.length>config.size/4*10){ game.score+=5000000+10000000*diff}
             document.getElementsByClassName('value')[0].innerText = `SCORE: ${game.score}`
             /* удаляем еду с поля */
             food.removeItem(foundFood);
@@ -218,7 +258,7 @@ const board = {
     },
 
     foodFinded(){
-        document.querySelectorAll(".board")[0].classList.toggle("pulse")
+        document.querySelectorAll('.board')[0].classList.toggle('pulse')
     },
 
     /**
@@ -226,7 +266,7 @@ const board = {
      */
     render() {
         const board = this.getElement();
-        // document.querySelectorAll(".cell").forEach((node) => {node.remove()}) //UPD: удаляет предыдущее отредендеренное поле
+        // document.querySelectorAll('.cell').forEach((node) => {node.remove()}) //UPD: удаляет предыдущее отредендеренное поле
         /* рисуем на странице 20*20 клеток */
         for (let i = 0; i < config.size**2; i++) {
             const cell = document.createElement('div');
@@ -273,7 +313,7 @@ const cells = {
 
         /* для заданных координат ищем клетку и добавляем класс */
         for (let coordinate of coordinates) {
-            const cell = document.querySelector(`.cell[data-top="${coordinate.top}"][data-left="${coordinate.left}"]`);
+            const cell = document.querySelector(`.cell[data-top='${coordinate.top}'][data-left='${coordinate.left}']`);
             cell.classList.add(className);
         }
     }
@@ -334,7 +374,7 @@ const snake = {
 
         /* в зависимости от текущего положения
          * высчитываем значение от верхней и левой границы */
-        if (game.nowstatus !== "stopped") {
+        if (game.nowstatus !== GAME_STATUS_STOPPED) {
         switch(this.direction) {
             case SNAKE_DIRECTION_UP:
                 position.top -= 1;
@@ -351,10 +391,10 @@ const snake = {
         }
         for (part in snake.parts) {
             if (position.top == snake.parts[part].top && position.left == snake.parts[part].left) {
-                console.log("Ты врезался сам в себя!")
-                
+                console.log('Ты врезался сам в себя!')
+                clearTimeout(timer)
                 game.stop();
-                document.getElementsByClassName('status')[0].innerText = "Ты врезался сам в себя!"
+                document.getElementsByClassName('status')[0].innerText = 'Ты врезался сам в себя!'
                 break
             }
         }
@@ -362,11 +402,12 @@ const snake = {
          * то изменяем координаты на противоположную сторону, !UPD: закончим игру
          * чтобы змейка выходя за границы возвращалась обратно на поле */
         if (position.top === -1 || position.left === -1 || position.top > config.size - 1 || position.left > config.size - 1) {
-            console.log("Ты врезался в стену!")
-            
+            console.log('Ты врезался в стену!')
+            // debugger
+            clearTimeout(timer)
             game.stop();
             position.top = snake.parts[snake.parts.length-1].top; position.left = snake.parts[snake.parts.length-1].left
-            document.getElementsByClassName('status')[0].innerText = "Ты врезался в стену!"
+            document.getElementsByClassName('status')[0].innerText = 'Ты врезался в стену!'
             return position
         } else {return position;}
         } else {position.top = snake.parts[snake.parts.length-1].top; position.left = snake.parts[snake.parts.length-1].left
@@ -399,18 +440,13 @@ const snake = {
      * Функция отрисовывает змейку на поле.
      */
     render() {
-        if (game.nowstatus != "stopped"){
+        if (game.nowstatus != GAME_STATUS_STOPPED){
             cells.renderItems(this.parts, 'snake');
-            document.querySelectorAll(".snake").forEach((node) => {node.classList.remove("snakebreak")})
+            document.querySelectorAll('.snake').forEach((node) => {node.classList.remove('snakebreak')})
         } else {
             cells.renderItems(this.parts, 'snake');
-            document.querySelectorAll(".snake").forEach((node) => {node.classList.toggle("snakebreak")})
+            document.querySelectorAll('.snake').forEach((node) => {node.classList.toggle('snakebreak')})
         }
-        
-        // let snakehead = document.getElementsByClassName("snake")[snake.parts.length-1]
-        // let snakebody = document.getElementsByClassName("snake")[snake.parts.length-2]
-        // snakehead.className = `${snakehead.className} head`
-        // snakebody.className = "cell snake"
     }
 };
 
@@ -484,7 +520,7 @@ const food = {
      */
     render() {
         cells.renderItems(this.items, 'food');
-        document.querySelectorAll(".board")[0].classList.toggle("pulse")
+        document.querySelectorAll('.board')[0].classList.toggle('pulse')
         setTimeout(board.foodFinded, 260);
     }
 };
@@ -497,11 +533,20 @@ function init() {
     const restartButton = document.getElementById('button-restart');
     const pauseButton = document.getElementById('button-pause');
     const stopButton = document.getElementById('button-stop');
+    const setDiffEasyButton = document.getElementById('button-set-diff-easy');
+    const setDiffMediumButton = document.getElementById('button-set-diff-medium');
+    const setDiffHardButton = document.getElementById('button-set-diff-hard');
+    const setDiffHardcoreButton = document.getElementById('button-set-diff-hardcore');
 
     /* добавляем обработчики клика на кнопки */
     restartButton.addEventListener('click', game.start.bind(game));
     pauseButton.addEventListener('click', game.pause.bind(game));
     stopButton.addEventListener('click', game.stop.bind(game));
+
+    setDiffEasyButton.addEventListener('click', setUserDifficulty)
+    setDiffMediumButton.addEventListener('click', setUserDifficulty)
+    setDiffHardButton.addEventListener('click', setUserDifficulty);
+    setDiffHardcoreButton.addEventListener('click', setUserDifficulty)
 
     /* добавляем обработчик при нажатии на любую кнопку на клавиатуре,
      * далее в методе мы будем проверять нужную нам клавишу */
@@ -518,6 +563,13 @@ function init() {
  */
 function getRandomNumber(min, max) {
     return Math.trunc(Math.random() * (max - min) + min);
+}
+
+function setUserDifficulty(){
+    document.querySelectorAll(".buttons>button").forEach((button) => button.toggleAttribute("disabled"));
+    diff = DIFFICULTY.indexOf(this.className);
+    console.log(`Выбран уровень сложности: ${DIFFICULTY[diff]}`)
+    this.toggleAttribute("disabled");
 }
 
 window.addEventListener('load', init);
