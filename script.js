@@ -150,7 +150,9 @@ const game = {
         // debugger
         if (game.nowstatus == GAME_STATUS_PAUSED) return
         if (event) {
+
             lastEvent = event;
+            return
           } else {
             event = lastEvent;
           }
