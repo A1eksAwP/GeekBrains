@@ -9,27 +9,29 @@
     <script type="text/javascript" src="script.js"></script>
 </head>
 <body>
-    <div id="game" class="game">
-        <div id="score" class="score">
-            <span id="status-value" class="status">Начальное меню</span>
-            <span id="score-value" class="value">0</span>
-        </div>
-        <div id="board" class="board"></div>
-        <div id="buttons" class="buttons-menu buttons">
-            <button disabled id="button-restart" class="restart" type="button">Запустить!</button>
-            <button disabled id="button-pause" class="pause" type="button">Пауза</button>
-            <button disabled id="button-stop" class="stop" type="button">Сдаться</button>
-        </div>
-        <p>Выбери уровень сложности:</p>
-        <div class="buttons-diff buttons">
-            <button id="button-set-diff-easy" class="easy" type="button">Легкий</button>
-            <button id="button-set-diff-medium" class="medium" type="button">Средний</button>
-            <button id="button-set-diff-hard" class="hard" type="button">Тяжёлый</button>
-            <button id="button-set-diff-hardcore" class="hardcore" type="button">Hardcore!</button>
-        </div>
-        <p class="hint">(Для выбора другого уровня сложности повторно нажми нынешний)</p>
+    <div class="container">
+        <div id="game" class="game">
+            <div id="score" class="score">
+                <span id="status-value" class="status">Начальное меню</span>
+                <span id="score-value" class="value">0</span>
+            </div>
+            <div class="displayboard"><div id="board" class="board"></div></div>
+            <div id="buttons" class="buttons-menu buttons">
+                <button disabled id="button-restart" class="restart" type="button">Запустить!</button>
+                <button disabled id="button-pause" class="pause" type="button">Пауза</button>
+                <button disabled id="button-stop" class="stop" type="button">Сдаться</button>
+            </div>
+            <p>Выбери уровень сложности:</p>
+            <div class="buttons-diff buttons">
+                <button id="button-set-diff-easy" class="easy" type="button">Легкий</button>
+                <button id="button-set-diff-medium" class="medium" type="button">Средний</button>
+                <button id="button-set-diff-hard" class="hard" type="button">Тяжёлый</button>
+                <button id="button-set-diff-hardcore" class="hardcore" type="button">Hardcore!</button>
+            </div>
+            <p class="hint">(Для выбора другого уровня сложности повторно нажми нынешний)</p>
+                
             
-        
+        </div>
     </div>
 </body>
 </html>
